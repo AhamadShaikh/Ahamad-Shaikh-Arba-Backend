@@ -160,12 +160,13 @@ router.post('/reset-password/:token', async (req, res) => {
 
 // Update Profile
 router.patch('/update-profile', async (req, res) => {
-  const { fullName, avatar } = req.body;
-  const userId = req.user.userId;
+  const { userId, fullName, avatar } = req.body;
+  // const userId = req.userId;
+  console.log(userId);
 
   try {
-    await User.findByIdAndUpdate(userId, { fullName, avatar });
-    res.status(200).json({ message: 'Profile updated successfully' });
+    const updatedUser = await User.findByIdAndUpdate(userId, { ...req.body, fullName, avatar }, { new: true });
+    res.status(200).json({ updatedUser: updatedUser, message: 'Profile updated successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -175,7 +176,7 @@ router.patch('/update-profile', async (req, res) => {
 // Update Avatar
 router.patch('/update-avatar', async (req, res) => {
   const { avatar } = req.body;
-  const userId = req.user.userId;
+  const userId = req.userId;
 
   try {
     await User.findByIdAndUpdate(userId, { avatar });
