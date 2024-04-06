@@ -160,11 +160,11 @@ router.post('/reset-password/:token', async (req, res) => {
 
 // Update Profile
 router.patch('/update-profile', async (req, res) => {
-  const { fullName } = req.body;
+  const { fullName, avatar } = req.body;
   const userId = req.user.userId;
 
   try {
-    await User.findByIdAndUpdate(userId, { fullName });
+    await User.findByIdAndUpdate(userId, { fullName, avatar });
     res.status(200).json({ message: 'Profile updated successfully' });
   } catch (error) {
     console.error(error);
