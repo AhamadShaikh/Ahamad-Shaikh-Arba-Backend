@@ -189,8 +189,8 @@ router.patch('/update-avatar', async (req, res) => {
 
 // Change Password
 router.patch('/change-password', async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
-  const userId = req.user.userId;
+  const {userId ,oldPassword, newPassword } = req.body;
+  // const userId = req.userId;
 
   try {
     const user = await User.findById(userId);
