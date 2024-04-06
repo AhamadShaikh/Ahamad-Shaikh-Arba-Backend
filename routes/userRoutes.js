@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const blacklistToken = require("../model/blacklist")
+const nodemailer = require("nodemailer")
 
 router.post("/register", async (req, res) => {
   const { password } = req.body
@@ -91,6 +92,24 @@ router.get("/myuser", async (req, res) => {
   }
 });
 
+const generateRandomToken = async (email) => {
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      return res.status(400).json({ msg: "User not found" });
+    }
+
+    const token = jwt.sign(
+      { userId: existingUser._id, name: existingUser.name },
+      "ironman",
+    );
+    return token;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 // Forgot Password
 router.post('/forgot-password', async (req, res) => {
@@ -103,7 +122,7 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const token = generateRandomToken();
+    const token = generateRandomToken(email);
 
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000;
@@ -189,7 +208,7 @@ router.patch('/update-avatar', async (req, res) => {
 
 // Change Password
 router.patch('/change-password', async (req, res) => {
-  const {userId ,oldPassword, newPassword } = req.body;
+  const { userId, oldPassword, newPassword } = req.body;
   // const userId = req.userId;
 
   try {
