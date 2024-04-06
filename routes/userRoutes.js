@@ -121,7 +121,7 @@ router.post('/forgot-password', async (req, res) => {
       from: 'your_email@gmail.com',
       to: user.email,
       subject: 'Password Reset Link',
-      text: `Click the following link to reset your password: https://gentle-concha-cfd0e9.netlify.app/reset-password/${token}`
+      text: `Click the following link to reset your password: https://gentle-concha-cfd0e9.netlify.app/user/reset-password/${token}`
     };
 
     await transporter.sendMail(mailOptions);
